@@ -28,11 +28,19 @@
 	</scm>
 	<properties>
 		<java.version>21</java.version>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <openapi-generator.version>7.19.0</openapi-generator.version>
+        <springdoc-openapi-starter-webmvc-ui.version>3.0.1</springdoc-openapi-starter-webmvc-ui.version>
+        <jackson-databind-nullable.version>0.2.8</jackson-databind-nullable.version>
+        <mapstruct.version>1.6.3</mapstruct.version>
+
 	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-webmvc</artifactId>
+			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
 		<dependency>
@@ -41,16 +49,33 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+		</dependency>
+
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webmvc-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>jakarta.validation</groupId>
+			<artifactId>jakarta.validation-api</artifactId>
+		</dependency>
+
 
 		  <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
+
+ 		<dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
+
 		<dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -65,11 +90,78 @@
 	</dependencies>
 
 	<build>
+	
 		<plugins>
 			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
+    <groupId>org.openapitools</groupId>
+    <artifactId>openapi-generator-maven-plugin</artifactId>
+    <version>${openapi-generator.version}</version>
+    <executions>
+        <execution>
+            <goals>
+                <goal>generate</goal>
+            </goals>
+            <phase>generate-sources</phase>
+            <configuration>
+                <inputSpec>${project.basedir}/src/main/resources/openapi/openapi.yaml</inputSpec>
+                <generatorName>spring</generatorName>
+                <apiPackage>com.example.calculator.api</apiPackage>
+                <modelPackage>com.example.calculator.dto</modelPackage>
+                
+                <!-- Важно: добавляем сгенерированные источники в компиляцию -->
+                <addCompileSourceRoot>true</addCompileSourceRoot>
+                
+                <configOptions>
+                    <!-- Генерируем только интерфейсы, без реализации -->
+                    <interfaceOnly>true</interfaceOnly>
+                    
+                    <!-- Для Spring Boot 4 обязательно true -->
+                    <useSpringBoot3>true</useSpringBoot3>
+                    
+                    <!-- Используем теги из openapi.yaml -->
+                    <useTags>true</useTags>
+                    
+                    <!-- Включаем валидацию -->
+                    <useBeanValidation>true</useBeanValidation>
+                    
+                    <!-- Отключаем генерацию nullable (не нужно) -->
+                    <openApiNullable>false</openApiNullable>
+                    
+                    <!-- Не генерируем дефолтные интерфейсы -->
+                    <skipDefaultInterface>true</skipDefaultInterface>
+                    
+                    <!-- Не реактивный стек -->
+                    <reactive>false</reactive>
+                    
+                    <!-- Важно для BigDecimal -->
+                    <useBigDecimal>true</useBigDecimal>
+                    
+                    <!-- Дата библиотека -->
+                    <dateLibrary>java8</dateLibrary>
+                    
+                    <!-- Не генерируем тесты -->
+                    <generateApiTests>false</generateApiTests>
+                    <generateModelTests>false</generateModelTests>
+                    
+                    <!-- Явно указываем использовать Jakarta (для Spring Boot 4) -->
+                    <useJakartaEe>true</useJakartaEe>
+                    
+                    <!-- Маппинг типов -->
+                    <typeMappings>
+                        <typeMapping>bigdecimal=BigDecimal</typeMapping>
+                    </typeMappings>
+                    
+                    <!-- Импорты для сгенерированного кода -->
+                    <importMappings>
+                        <importMapping>BigDecimal=java.math.BigDecimal</importMapping>
+                        <importMapping>LocalDate=java.time.LocalDate</importMapping>
+                        <importMapping>UUID=java.util.UUID</importMapping>
+                    </importMappings>
+                </configOptions>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
 		</plugins>
 	</build>
 
