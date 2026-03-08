@@ -146,6 +146,12 @@
                     <!-- Явно указываем использовать Jakarta (для Spring Boot 4) -->
                     <useJakartaEe>true</useJakartaEe>
                     
+                    <additionalModelTypeAnnotations>
+                        @lombok.Builder
+                        @lombok.NoArgsConstructor
+                        @lombok.AllArgsConstructor
+                    </additionalModelTypeAnnotations>
+
                     <!-- Маппинг типов -->
                     <typeMappings>
                         <typeMapping>bigdecimal=BigDecimal</typeMapping>

@@ -122,7 +122,7 @@ components:
           type: string
           format: email
           description: Email
-          example: зфмуд@example.com
+          example: pavel@example.com
         birthdate:
           type: string
           format: date
