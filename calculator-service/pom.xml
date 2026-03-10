@@ -64,6 +64,40 @@
 			<artifactId>jakarta.validation-api</artifactId>
 		</dependency>
 
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <scope>test</scope>
+         </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+            <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <scope>test</scope>
+        <dependency>
+            <groupId>com.jayway.jsonpath</groupId>
+            <artifactId>json-path</artifactId>
+            <scope>test</scope>
+        </dependency>
+        </dependency>
+    
+         
 
 		  <dependency>
             <groupId>org.projectlombok</groupId>
@@ -108,42 +142,20 @@
                 <apiPackage>com.example.calculator.api</apiPackage>
                 <modelPackage>com.example.calculator.dto</modelPackage>
                 
-                <!-- Важно: добавляем сгенерированные источники в компиляцию -->
                 <addCompileSourceRoot>true</addCompileSourceRoot>
                 
                 <configOptions>
-                    <!-- Генерируем только интерфейсы, без реализации -->
                     <interfaceOnly>true</interfaceOnly>
-                    
-                    <!-- Для Spring Boot 4 обязательно true -->
                     <useSpringBoot3>true</useSpringBoot3>
-                    
-                    <!-- Используем теги из openapi.yaml -->
                     <useTags>true</useTags>
-                    
-                    <!-- Включаем валидацию -->
                     <useBeanValidation>true</useBeanValidation>
-                    
-                    <!-- Отключаем генерацию nullable (не нужно) -->
                     <openApiNullable>false</openApiNullable>
-                    
-                    <!-- Не генерируем дефолтные интерфейсы -->
                     <skipDefaultInterface>true</skipDefaultInterface>
-                    
-                    <!-- Не реактивный стек -->
                     <reactive>false</reactive>
-                    
-                    <!-- Важно для BigDecimal -->
                     <useBigDecimal>true</useBigDecimal>
-                    
-                    <!-- Дата библиотека -->
                     <dateLibrary>java8</dateLibrary>
-                    
-                    <!-- Не генерируем тесты -->
                     <generateApiTests>false</generateApiTests>
                     <generateModelTests>false</generateModelTests>
-                    
-                    <!-- Явно указываем использовать Jakarta (для Spring Boot 4) -->
                     <useJakartaEe>true</useJakartaEe>
                     
                     <additionalModelTypeAnnotations>
@@ -152,12 +164,10 @@
                         @lombok.AllArgsConstructor
                     </additionalModelTypeAnnotations>
 
-                    <!-- Маппинг типов -->
                     <typeMappings>
                         <typeMapping>bigdecimal=BigDecimal</typeMapping>
                     </typeMappings>
                     
-                    <!-- Импорты для сгенерированного кода -->
                     <importMappings>
                         <importMapping>BigDecimal=java.math.BigDecimal</importMapping>
                         <importMapping>LocalDate=java.time.LocalDate</importMapping>
