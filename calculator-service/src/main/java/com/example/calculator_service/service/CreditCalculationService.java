@@ -87,6 +87,7 @@ public class CreditCalculationService {
     }
     
     private BigDecimal calculateMonthlyPayment(BigDecimal amount, BigDecimal annualRate, int term) {
+        // /12 /100
         BigDecimal monthlyRate = annualRate
                 .divide(BigDecimal.valueOf(12), 10, RoundingMode.HALF_UP)
                 .divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP);
