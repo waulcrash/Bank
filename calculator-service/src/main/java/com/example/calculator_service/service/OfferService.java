@@ -83,7 +83,7 @@ public class OfferService {
     }
     
     private BigDecimal calculateInsuranceCost(BigDecimal amount) {
-        BigDecimal millions = amount.divide(BigDecimal.valueOf(1_000_000), 2, RoundingMode.HALF_UP);
+        BigDecimal millions = amount.divide(BigDecimal.valueOf(1_000_000), 4, RoundingMode.HALF_UP);
         return millions.multiply(creditProperties.getInsurance().getCostPerMillion());
     }
     

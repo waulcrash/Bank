@@ -45,7 +45,7 @@ public class CreditCalculationService {
         BigDecimal psk = calculatePsk(totalAmount, monthlyPayment, scoringData.getTerm());
         
         return CreditDto.builder()
-                .amount(scoringData.getAmount())
+                .amount(totalAmount)
                 .term(scoringData.getTerm())
                 .monthlyPayment(monthlyPayment)
                 .rate(rate)
@@ -82,15 +82,15 @@ public class CreditCalculationService {
     }
     
     private BigDecimal calculateInsuranceCost(BigDecimal amount) {
-        BigDecimal millions = amount.divide(BigDecimal.valueOf(1_000_000), 2, RoundingMode.HALF_UP);
+        BigDecimal millions = amount.divide(BigDecimal.valueOf(1_000_000), 4, RoundingMode.HALF_UP);
         return millions.multiply(creditProperties.getInsurance().getCostPerMillion());
     }
     
     private BigDecimal calculateMonthlyPayment(BigDecimal amount, BigDecimal annualRate, int term) {
         // /12 /100
         BigDecimal monthlyRate = annualRate
-                .divide(BigDecimal.valueOf(12), 10, RoundingMode.HALF_UP)
-                .divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP);
+                .divide(BigDecimal.valueOf(12), 10, RoundingMode.CEILING)
+                .divide(BigDecimal.valueOf(100), 10, RoundingMode.CEILING);
         
         BigDecimal onePlusRate = BigDecimal.ONE.add(monthlyRate);
         BigDecimal ratePower = onePlusRate.pow(term);
@@ -98,10 +98,10 @@ public class CreditCalculationService {
         BigDecimal numerator = monthlyRate.multiply(ratePower);
         BigDecimal denominator = ratePower.subtract(BigDecimal.ONE);
         
-        BigDecimal annuityFactor = numerator.divide(denominator, 10, RoundingMode.HALF_UP);
+        BigDecimal annuityFactor = numerator.divide(denominator, 10, RoundingMode.CEILING);
         
         return amount.multiply(annuityFactor)
-                .setScale(2, RoundingMode.HALF_UP);
+                .setScale(2, RoundingMode.CEILING);
     }
     
     private List<PaymentScheduleElementDto> createPaymentSchedule(
@@ -115,13 +115,13 @@ public class CreditCalculationService {
         LocalDate paymentDate = LocalDate.now().plusMonths(1);
         
         BigDecimal monthlyRate = annualRate
-                .divide(BigDecimal.valueOf(12), 10, RoundingMode.HALF_UP)
-                .divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP);
+                .divide(BigDecimal.valueOf(12), 10, RoundingMode.CEILING)
+                .divide(BigDecimal.valueOf(100), 10, RoundingMode.CEILING);
         
         for (int i = 1; i <= term; i++) {
             BigDecimal interestPayment = remainingDebt
                     .multiply(monthlyRate)
-                    .setScale(2, RoundingMode.HALF_UP);
+                    .setScale(2, RoundingMode.CEILING);
             
             BigDecimal debtPayment = monthlyPayment.subtract(interestPayment);
             remainingDebt = remainingDebt.subtract(debtPayment);
@@ -153,8 +153,8 @@ public class CreditCalculationService {
         BigDecimal overpayment = totalPayments.subtract(amount);
         
         return overpayment
-                .divide(amount, 4, RoundingMode.HALF_UP)
+                .divide(amount, 4, RoundingMode.CEILING)
                 .multiply(BigDecimal.valueOf(100))
-                .setScale(2, RoundingMode.HALF_UP);
+                .setScale(2, RoundingMode.CEILING);
     }
 }
