@@ -1,0 +1,277 @@
+openapi: 3.1.0
+info:
+  title: Deal API
+  description: API для управления кредитными заявками
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8081
+    description: Локальный сервер
+
+tags:
+  - name: deal-controller
+    description: Операции с заявками
+
+paths:
+  /deal/statement:
+    post:
+      tags:
+        - deal-controller
+      summary: Создать заявку и получить предложения
+      operationId: createStatement
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoanStatementRequestDto'
+      responses:
+        '200':
+          description: Успешно создана заявка и получены предложения
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LoanOfferDto'
+        '400':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /deal/offer/select:
+    post:
+      tags:
+        - deal-controller
+      summary: Выбрать предложение
+      operationId: selectOffer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoanOfferDto'
+      responses:
+        '200':
+          description: Успешно выбран оффер и выполнен полный расчет
+        '400':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Заявка не найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    LoanStatementRequestDto:
+      type: object
+      required:
+        - amount
+        - term
+        - firstName
+        - lastName
+        - email
+        - birthdate
+        - passportSeries
+        - passportNumber
+      properties:
+        amount:
+          type: number
+          format: bigdecimal
+          example: 1000000
+        term:
+          type: integer
+          format: int32
+          example: 12
+        firstName:
+          type: string
+          example: Павел
+        lastName:
+          type: string
+          example: Хвостунов
+        middleName:
+          type: string
+          example: Сергеевич
+        email:
+          type: string
+          format: email
+          example: pavel@example.com
+        birthdate:
+          type: string
+          format: date
+          example: 2005-02-08
+        passportSeries:
+          type: string
+          example: "1234"
+        passportNumber:
+          type: string
+          example: "123456"
+
+    LoanOfferDto:
+      type: object
+      properties:
+        statementId:
+          type: string
+          format: uuid
+        requestedAmount:
+          type: number
+          format: bigdecimal
+        totalAmount:
+          type: number
+          format: bigdecimal
+        term:
+          type: integer
+          format: int32
+        monthlyPayment:
+          type: number
+          format: bigdecimal
+        rate:
+          type: number
+          format: bigdecimal
+        isInsuranceEnabled:
+          type: boolean
+        isSalaryClient:
+          type: boolean
+
+    ScoringDataDto:
+      type: object
+      required:
+        - amount
+        - term
+        - firstName
+        - lastName
+        - birthdate
+        - passportSeries
+        - passportNumber
+        - isInsuranceEnabled
+        - isSalaryClient
+      properties:
+        amount:
+          type: number
+          format: bigdecimal
+        term:
+          type: integer
+          format: int32
+        firstName:
+          type: string
+        lastName:
+          type: string
+        middleName:
+          type: string
+        birthdate:
+          type: string
+          format: date
+        passportSeries:
+          type: string
+        passportNumber:
+          type: string
+        isInsuranceEnabled:
+          type: boolean
+        isSalaryClient:
+          type: boolean
+
+    CreditDto:
+      type: object
+      properties:
+        amount:
+          type: number
+          format: bigdecimal
+        term:
+          type: integer
+          format: int32
+        monthlyPayment:
+          type: number
+          format: bigdecimal
+        rate:
+          type: number
+          format: bigdecimal
+        psk:
+          type: number
+          format: bigdecimal
+        isInsuranceEnabled:
+          type: boolean
+        isSalaryClient:
+          type: boolean
+        paymentSchedule:
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentScheduleElementDto'
+
+    PaymentScheduleElementDto:
+      type: object
+      properties:
+        number:
+          type: integer
+        date:
+          type: string
+          format: date
+        totalPayment:
+          type: number
+          format: bigdecimal
+        interestPayment:
+          type: number
+          format: bigdecimal
+        debtPayment:
+          type: number
+          format: bigdecimal
+        remainingDebt:
+          type: number
+          format: bigdecimal
+
+    StatusHistoryDto:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+            - PREAPPROVAL
+            - APPROVED
+            - CC_APPROVED
+            - CC_DENIED
+            - DOCUMENT_CREATED
+            - CLIENT_DOCUMENTS_SENT
+            - DOCUMENT_SIGNED
+            - CREDIT_ISSUED
+        time:
+          type: string
+          format: date-time
+        changeType:
+          type: string
+          enum:
+            - AUTOMATIC
+            - MANUAL
+
+    ErrorResponse:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        status:
+          type: integer
+        error:
+          type: string
+        message:
+          type: string
+        path:
+          type: string
