@@ -43,7 +43,7 @@ public class Statement {
     
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
-    private String appliedOffer;  // JSONB поле
+    private String appliedOffer;  
     
     @Column(name = "sign_date")
     private LocalDateTime signDate;
@@ -53,7 +53,7 @@ public class Statement {
     
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
-    private List<StatementStatusHistoryDto> statusHistory;  // JSONB поле
+    private List<StatementStatusHistoryDto> statusHistory;  
     
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

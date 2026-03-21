@@ -74,10 +74,18 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- Source: https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-liquibase -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-liquibase</artifactId>
+            <version>4.0.0</version>
+            <scope>compile</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
-            <version>${liquibase.version}</version>
+            <version>4.27.0</version>
         </dependency>
 
 		<!-- JSON -->
