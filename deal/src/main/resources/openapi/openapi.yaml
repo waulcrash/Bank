@@ -62,6 +62,11 @@ paths:
       responses:
         '200':
           description: Успешно выбран оффер и выполнен полный расчет
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
         '400':
           description: Ошибка валидации
           content:
@@ -83,7 +88,33 @@ paths:
 
 components:
   schemas:
-  
+    # ========== ENUMS ==========
+    ApplicationStatus:
+      type: string
+      enum:
+        - PREAPPROVAL
+        - APPROVED
+        - CC_APPROVED
+        - DOCUMENT_CREATED
+    
+    ChangeType:
+      type: string
+      enum:
+        - AUTOMATIC
+        - MANUAL
+    
+    # ========== DTO ==========
+    StatementStatusHistoryDto:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/ApplicationStatus'
+        time:
+          type: string
+          format: date-time
+        changeType:
+          $ref: '#/components/schemas/ChangeType'
+    
     LoanStatementRequestDto:
       type: object
       required:
@@ -239,29 +270,6 @@ components:
           type: number
           format: bigdecimal
 
-    StatusHistoryDto:
-      type: object
-      properties:
-        status:
-          type: string
-          enum:
-            - PREAPPROVAL
-            - APPROVED
-            - CC_APPROVED
-            - CC_DENIED
-            - DOCUMENT_CREATED
-            - CLIENT_DOCUMENTS_SENT
-            - DOCUMENT_SIGNED
-            - CREDIT_ISSUED
-        time:
-          type: string
-          format: date-time
-        changeType:
-          type: string
-          enum:
-            - AUTOMATIC
-            - MANUAL
-
     ErrorResponse:
       type: object
       properties:
@@ -276,22 +284,3 @@ components:
           type: string
         path:
           type: string
-      
-    ApplicationStatus:
-      type: string
-      enum:
-        - PREAPPROVAL
-        - APPROVED
-        - CC_APPROVED
-        - CC_DENIED
-        - DOCUMENT_CREATED
-        - CLIENT_DOCUMENTS_SENT
-        - DOCUMENT_SIGNED
-        - CREDIT_ISSUED
-    
-    ChangeType:
-      type: string
-      enum:
-        - AUTOMATIC
-        - MANUAL
-  
