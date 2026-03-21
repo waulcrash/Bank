@@ -83,6 +83,7 @@ paths:
 
 components:
   schemas:
+  
     LoanStatementRequestDto:
       type: object
       required:
@@ -275,3 +276,22 @@ components:
           type: string
         path:
           type: string
+      
+    ApplicationStatus:
+      type: string
+      enum:
+        - PREAPPROVAL
+        - APPROVED
+        - CC_APPROVED
+        - CC_DENIED
+        - DOCUMENT_CREATED
+        - CLIENT_DOCUMENTS_SENT
+        - DOCUMENT_SIGNED
+        - CREDIT_ISSUED
+    
+    ChangeType:
+      type: string
+      enum:
+        - AUTOMATIC
+        - MANUAL
+  
