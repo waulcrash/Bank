@@ -104,6 +104,20 @@ components:
         - MANUAL
     
     # ========== DTO ==========
+
+    PassportDto:
+      type: object
+      description: Паспортные данные
+      properties:
+        series:
+          type: string
+          description: Серия паспорта
+          example: "1234"
+        number:
+          type: string
+          description: Номер паспорта
+          example: "567890"
+          
     StatementStatusHistoryDto:
       type: object
       properties:
