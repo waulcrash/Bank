@@ -10,6 +10,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import java.util.List;
 
+
+/**
+ * Клиент для взаимодействия с микросервисом-калькулятором
+ * Отвечает за отправку HTTP к API калькулятора для расчета кредитных предложений
+ */
 @Slf4j
 @Component
 public class CalculatorClient {
@@ -22,6 +27,10 @@ public class CalculatorClient {
         log.info("CalculatorClient initialized with URL: {}", calculatorUrl);
     }
     
+    /**
+     * Получение списка кредитных предложений на основе заявки клиента
+     * Отправляет POST на /calculator/offers
+     */
     public List<LoanOfferDto> getOffers(LoanStatementRequestDto request) {
         log.info("Calling calculator /offers endpoint");
         
@@ -42,6 +51,10 @@ public class CalculatorClient {
         }
     }
     
+    /**
+     * Расчет полных параметров кредита на основе скоринг данных
+     * Отправляет POST на /calculator/calc
+     */ 
     public CreditDto calculateCredit(ScoringDataDto scoringData) {
         log.info("Calling calculator /calc endpoint");
         
