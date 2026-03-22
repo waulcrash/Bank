@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -65,17 +66,19 @@ public class DealService {
         log.info("Client saved with id: {}", client.getId());
         
         // 3. Запись в истории статусов
-        StatementStatusHistoryDto statusHistory = StatementStatusHistoryDto.builder()
+        List<StatementStatusHistoryDto> statusHistory = new ArrayList<>();
+        statusHistory.add(StatementStatusHistoryDto.builder()
             .status(ApplicationStatus.PREAPPROVAL)
             .time(OffsetDateTime.now())
             .changeType(ChangeType.AUTOMATIC)
-            .build();
-        // Заявка
+            .build());
+        
+        // 4. Заявка
         Statement newStatement = Statement.builder()
             .client(client)
             .status(ApplicationStatus.PREAPPROVAL)
             .creationDate(LocalDateTime.now())
-            .statusHistory(List.of(statusHistory))
+            .statusHistory(statusHistory)  
             .build();
         
         Statement savedStatement = statementRepository.save(newStatement);
