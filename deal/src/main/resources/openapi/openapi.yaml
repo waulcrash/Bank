@@ -1,0 +1,552 @@
+openapi: 3.1.0
+info:
+  title: Deal API
+  description: API для управления кредитными заявками
+  version: 1.0.0
+  contact:
+    name: Support
+    email: support@example.com
+
+servers:
+  - url: http://localhost:8081
+    description: Локальный сервер
+
+tags:
+  - name: deal-controller
+    description: Операции с заявками
+
+paths:
+  /deal/statement:
+    post:
+      tags:
+        - deal-controller
+      summary: Создать заявку и получить предложения
+      description: |
+        Создает нового клиента и заявку, затем получает 4 кредитных предложения от калькулятора.
+        Предложения сортируются от худшего к лучшему (по процентной ставке).
+      operationId: createStatement
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoanStatementRequestDto'
+            examples:
+              standard:
+                summary: Стандартный запрос
+                value:
+                  amount: 1000000
+                  term: 12
+                  firstName: "Иван"
+                  lastName: "Петров"
+                  middleName: "Иванович"
+                  email: "ivan.petrov@example.com"
+                  birthdate: "1990-01-01"
+                  passportSeries: "1234"
+                  passportNumber: "567890"
+              withMiddleName:
+                summary: Запрос с отчеством
+                value:
+                  amount: 500000
+                  term: 24
+                  firstName: "Елена"
+                  lastName: "Смирнова"
+                  middleName: "Алексеевна"
+                  email: "elena.smirnova@example.com"
+                  birthdate: "1985-05-15"
+                  passportSeries: "5678"
+                  passportNumber: "123456"
+              minimal:
+                summary: Минимальный запрос (без отчества)
+                value:
+                  amount: 2000000
+                  term: 36
+                  firstName: "Алексей"
+                  lastName: "Кузнецов"
+                  email: "alexey@example.com"
+                  birthdate: "1988-11-20"
+                  passportSeries: "9012"
+                  passportNumber: "789012"
+      responses:
+        '200':
+          description: Успешно создана заявка и получены предложения
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LoanOfferDto'
+              examples:
+                success:
+                  summary: Успешный ответ с 4 предложениями
+                  value:
+                    - statementId: "550e8400-e29b-41d4-a716-446655440000"
+                      requestedAmount: 1000000
+                      totalAmount: 1083096.00
+                      term: 12
+                      monthlyPayment: 90258.00
+                      rate: 15.0
+                      isInsuranceEnabled: false
+                      isSalaryClient: false
+                    - statementId: "550e8400-e29b-41d4-a716-446655440000"
+                      requestedAmount: 1000000
+                      totalAmount: 1078200.00
+                      term: 12
+                      monthlyPayment: 89850.00
+                      rate: 14.5
+                      isInsuranceEnabled: true
+                      isSalaryClient: false
+                    - statementId: "550e8400-e29b-41d4-a716-446655440000"
+                      requestedAmount: 1000000
+                      totalAmount: 1073040.00
+                      term: 12
+                      monthlyPayment: 89420.00
+                      rate: 14.0
+                      isInsuranceEnabled: false
+                      isSalaryClient: true
+                    - statementId: "550e8400-e29b-41d4-a716-446655440000"
+                      requestedAmount: 1000000
+                      totalAmount: 1066200.00
+                      term: 12
+                      monthlyPayment: 88850.00
+                      rate: 12.0
+                      isInsuranceEnabled: true
+                      isSalaryClient: true
+        '400':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                validationError:
+                  summary: Ошибка валидации суммы
+                  value:
+                    timestamp: "2026-03-22T10:00:00.000Z"
+                    status: 400
+                    error: "Bad Request"
+                    message: "Validation failed: amount must be at least 10000"
+                    path: "/deal/statement"
+                invalidEmail:
+                  summary: Неверный формат email
+                  value:
+                    timestamp: "2026-03-22T10:00:00.000Z"
+                    status: 400
+                    error: "Bad Request"
+                    message: "Validation failed: email should be valid"
+                    path: "/deal/statement"
+                invalidPassport:
+                  summary: Неверный формат паспорта
+                  value:
+                    timestamp: "2026-03-22T10:00:00.000Z"
+                    status: 400
+                    error: "Bad Request"
+                    message: "Validation failed: passportSeries must be 4 digits"
+                    path: "/deal/statement"
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                internalError:
+                  summary: Внутренняя ошибка
+                  value:
+                    timestamp: "2026-03-22T10:00:00.000Z"
+                    status: 500
+                    error: "Internal Server Error"
+                    message: "An unexpected error occurred"
+                    path: "/deal/statement"
+
+  /deal/offer/select:
+    post:
+      tags:
+        - deal-controller
+      summary: Выбрать предложение
+      description: |
+        Выбирает одно из предложений, выполняет полный расчет кредита через калькулятор,
+        сохраняет кредит и обновляет статус заявки.
+      operationId: selectOffer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoanOfferDto'
+            examples:
+              bestOffer:
+                summary: Выбор лучшего предложения (с страховкой и зарплатным клиентом)
+                value:
+                  statementId: "550e8400-e29b-41d4-a716-446655440000"
+                  requestedAmount: 1000000
+                  totalAmount: 1066200.00
+                  term: 12
+                  monthlyPayment: 88850.00
+                  rate: 12.0
+                  isInsuranceEnabled: true
+                  isSalaryClient: true
+              standardOffer:
+                summary: Стандартное предложение
+                value:
+                  statementId: "550e8400-e29b-41d4-a716-446655440000"
+                  requestedAmount: 1000000
+                  totalAmount: 1083096.00
+                  term: 12
+                  monthlyPayment: 90258.00
+                  rate: 15.0
+                  isInsuranceEnabled: false
+                  isSalaryClient: false
+      responses:
+        '200':
+          description: Успешно выбран оффер и выполнен полный расчет
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples:
+                success:
+                  summary: Успешный ответ
+                  value: {}
+        '400':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                validationError:
+                  summary: Ошибка валидации
+                  value:
+                    timestamp: "2026-03-22T10:00:00.000Z"
+                    status: 400
+                    error: "Bad Request"
+                    message: "Validation failed: requestedAmount must be positive"
+                    path: "/deal/offer/select"
+        '404':
+          description: Заявка не найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                notFound:
+                  summary: Заявка не найдена
+                  value:
+                    timestamp: "2026-03-22T10:00:00.000Z"
+                    status: 404
+                    error: "Not Found"
+                    message: "Statement not found with id: 550e8400-e29b-41d4-a716-446655440000"
+                    path: "/deal/offer/select"
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                internalError:
+                  summary: Внутренняя ошибка
+                  value:
+                    timestamp: "2026-03-22T10:00:00.000Z"
+                    status: 500
+                    error: "Internal Server Error"
+                    message: "Failed to calculate credit"
+                    path: "/deal/offer/select"
+
+components:
+  schemas:
+    # ========== ENUMS ==========
+    ApplicationStatus:
+      type: string
+      enum:
+        - PREAPPROVAL
+        - APPROVED
+        - CC_APPROVED
+        - DOCUMENT_CREATED
+      description: Статус заявки
+    
+    ChangeType:
+      type: string
+      enum:
+        - AUTOMATIC
+        - MANUAL
+      description: Тип изменения статуса
+    
+    # ========== DTO ==========
+
+    PassportDto:
+      type: object
+      description: Паспортные данные
+      properties:
+        series:
+          type: string
+          description: Серия паспорта (4 цифры)
+          example: "1234"
+        number:
+          type: string
+          description: Номер паспорта (6 цифр)
+          example: "567890"
+          
+    StatementStatusHistoryDto:
+      type: object
+      description: Запись истории изменения статуса
+      properties:
+        status:
+          $ref: '#/components/schemas/ApplicationStatus'
+        time:
+          type: string
+          format: date-time
+          description: Время изменения статуса
+          example: "2026-03-22T10:00:00.000Z"
+        changeType:
+          $ref: '#/components/schemas/ChangeType'
+    
+    LoanStatementRequestDto:
+      type: object
+      description: Запрос на создание заявки
+      required:
+        - amount
+        - term
+        - firstName
+        - lastName
+        - email
+        - birthdate
+        - passportSeries
+        - passportNumber
+      properties:
+        amount:
+          type: number
+          format: bigdecimal
+          description: Запрашиваемая сумма кредита (от 10000 до 10000000)
+          example: 1000000
+        term:
+          type: integer
+          format: int32
+          description: Срок кредита в месяцах (от 1 до 360)
+          example: 12
+        firstName:
+          type: string
+          description: Имя
+          example: "Иван"
+        lastName:
+          type: string
+          description: Фамилия
+          example: "Петров"
+        middleName:
+          type: string
+          description: Отчество (необязательно)
+          example: "Иванович"
+        email:
+          type: string
+          format: email
+          description: Адрес электронной почты
+          example: "ivan.petrov@example.com"
+        birthdate:
+          type: string
+          format: date
+          description: Дата рождения (ГГГГ-ММ-ДД)
+          example: "1990-01-01"
+        passportSeries:
+          type: string
+          description: Серия паспорта (4 цифры)
+          example: "1234"
+        passportNumber:
+          type: string
+          description: Номер паспорта (6 цифр)
+          example: "567890"
+
+    LoanOfferDto:
+      type: object
+      description: Кредитное предложение
+      properties:
+        statementId:
+          type: string
+          format: uuid
+          description: ID заявки
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        requestedAmount:
+          type: number
+          format: bigdecimal
+          description: Запрашиваемая сумма
+          example: 1000000
+        totalAmount:
+          type: number
+          format: bigdecimal
+          description: Итоговая сумма с процентами
+          example: 1066200.00
+        term:
+          type: integer
+          format: int32
+          description: Срок кредита в месяцах
+          example: 12
+        monthlyPayment:
+          type: number
+          format: bigdecimal
+          description: Ежемесячный платеж
+          example: 88850.00
+        rate:
+          type: number
+          format: bigdecimal
+          description: Процентная ставка
+          example: 12.0
+        isInsuranceEnabled:
+          type: boolean
+          description: Включена ли страховка
+          example: true
+        isSalaryClient:
+          type: boolean
+          description: Является ли зарплатным клиентом
+          example: true
+
+    ScoringDataDto:
+      type: object
+      description: Данные для скоринга и полного расчета
+      required:
+        - amount
+        - term
+        - firstName
+        - lastName
+        - birthdate
+        - passportSeries
+        - passportNumber
+        - isInsuranceEnabled
+        - isSalaryClient
+      properties:
+        amount:
+          type: number
+          format: bigdecimal
+          example: 1000000
+        term:
+          type: integer
+          format: int32
+          example: 12
+        firstName:
+          type: string
+          example: "Иван"
+        lastName:
+          type: string
+          example: "Петров"
+        middleName:
+          type: string
+          example: "Иванович"
+        birthdate:
+          type: string
+          format: date
+          example: "1990-01-01"
+        passportSeries:
+          type: string
+          example: "1234"
+        passportNumber:
+          type: string
+          example: "567890"
+        isInsuranceEnabled:
+          type: boolean
+          example: true
+        isSalaryClient:
+          type: boolean
+          example: true
+
+    CreditDto:
+      type: object
+      description: Полная информация о кредите
+      properties:
+        amount:
+          type: number
+          format: bigdecimal
+          description: Сумма кредита
+          example: 1000000
+        term:
+          type: integer
+          format: int32
+          description: Срок в месяцах
+          example: 12
+        monthlyPayment:
+          type: number
+          format: bigdecimal
+          description: Ежемесячный платеж
+          example: 88850.00
+        rate:
+          type: number
+          format: bigdecimal
+          description: Процентная ставка
+          example: 12.0
+        psk:
+          type: number
+          format: bigdecimal
+          description: Полная стоимость кредита (%)
+          example: 6.06
+        isInsuranceEnabled:
+          type: boolean
+          description: Страховка включена
+          example: true
+        isSalaryClient:
+          type: boolean
+          description: Зарплатный клиент
+          example: true
+        paymentSchedule:
+          type: array
+          description: График платежей
+          items:
+            $ref: '#/components/schemas/PaymentScheduleElementDto'
+
+    PaymentScheduleElementDto:
+      type: object
+      description: Элемент графика платежей
+      properties:
+        number:
+          type: integer
+          description: Номер платежа
+          example: 1
+        date:
+          type: string
+          format: date
+          description: Дата платежа
+          example: "2026-04-21"
+        totalPayment:
+          type: number
+          format: bigdecimal
+          description: Общая сумма платежа
+          example: 97219.83
+        interestPayment:
+          type: number
+          format: bigdecimal
+          description: Сумма процентов
+          example: 10083.34
+        debtPayment:
+          type: number
+          format: bigdecimal
+          description: Сумма погашения основного долга
+          example: 87136.49
+        remainingDebt:
+          type: number
+          format: bigdecimal
+          description: Остаток долга
+          example: 1012863.51
+
+    ErrorResponse:
+      type: object
+      description: Ответ с ошибкой
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          description: Время ошибки
+          example: "2026-03-22T10:00:00.000Z"
+        status:
+          type: integer
+          description: HTTP статус
+          example: 400
+        error:
+          type: string
+          description: Тип ошибки
+          example: "Bad Request"
+        message:
+          type: string
+          description: Сообщение об ошибке
+          example: "Validation failed: amount must be at least 10000"
+        path:
+          type: string
+          description: Путь запроса
+          example: "/deal/statement"
