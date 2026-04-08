@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Container } from '../../shared/ui/Container/Container';
 import { Logo } from '../../shared/ui/Logo/Logo';
 import { NavLink } from '../../shared/ui/NavLink/NavLink';
 import { Button } from '../../shared/ui/Button/Button';

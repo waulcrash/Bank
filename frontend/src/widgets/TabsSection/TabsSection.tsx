@@ -17,7 +17,6 @@ export const TabsSection: React.FC = () => {
       <section className="tabs-section">
         <Container>
           <Tabs tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
-          {/* Контент будет добавлен позже для rates, cashback, faq */}
         </Container>
       </section>
     
