@@ -1,0 +1,102 @@
+.hero {
+    padding-top: 4px;
+  }
+  
+  .hero__gradient-bg {
+    width: 1300px;
+    min-height: 390px;
+    background: linear-gradient(180deg, #CBD5E0 0%, #FEEBC8 90%);
+    border-radius: 28.8px;
+    margin: 0 auto;
+    padding: 40px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 40px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  }
+  
+  /* Левая колонка */
+  .hero__content {
+    flex: 1;
+    max-width: 60%;
+  }
+  
+  .hero__title {
+    font-size: 48px;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0 0 16px 0;
+    text-align: left;
+    line-height: 1.47;
+    letter-spacing: 0.02em;
+    font-family: 'Ubuntu', sans-serif;
+  }
+  
+  .hero__description {
+    font-size: 16px;
+    font-weight: 500;
+    text-align: left;
+    color: #2D3748;
+    margin: 0 0 32px 0;
+    line-height: 1.5;
+  }
+  
+  .hero__stats-grid {
+    display: flex;
+    gap: 48px;
+    margin-bottom: 40px;
+    text-align: left;
+  }
+  
+  .hero__stat {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .hero__stat-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: #3D3D3D;
+  }
+  
+  .hero__stat-label {
+    font-size: 16px;
+    font-weight: 500;
+    color: #3D3D3D;
+  }
+  
+  /* Правая колонка */
+  .hero__card-wrapper {
+    width: 380px;
+    height: 226px;
+    flex-shrink: 0;
+    margin-right: 60px;
+  }
+  
+  .hero__card {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;  
+  }
+  
+  .hero__button {
+    margin-top: 0;
+    text-align: left;
+  }
+  
+  @media (max-width: 1200px) {
+    .hero__gradient-bg {
+      flex-direction: column;
+      text-align: center;
+      padding: 40px 24px;
+    }
+    
+    .hero__content {
+      max-width: 100%;
+    }
+    
+    .hero__stats-grid {
+      justify-content: center;
+    }
+  }

@@ -1,0 +1,37 @@
+.header {
+    background: rgba(245, 244, 255, 0.95);
+    border-bottom: 1px solid rgba(128, 128, 128, 0.1);
+    
+
+    &__inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      
+      
+    }
+    
+    &__nav {
+      display: flex;
+      align-items: center;
+      gap: 40px;
+      size: 16px;
+    }
+    
+    &__nav a {
+      color: #1A202C;  /* чёрный цвет */
+      text-decoration: none;
+      font-weight: 700;
+    }
+    
+    &__nav a:hover {
+      color: #B2A35F;  
+    }
+    
+    &__buttons {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+  }
