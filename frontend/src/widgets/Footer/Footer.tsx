@@ -1,5 +1,6 @@
 import React from 'react';
 import { Container } from '../../shared/ui/Container/Container';
+import { Divider } from '../../shared/ui/Divider/Divider';
 import './Footer.css';
 
 // Импорт PNG логотипа
@@ -57,7 +58,7 @@ export const Footer: React.FC = () => {
         </div>
 
         {/* Разделительная линия */}
-        <div className="footer__divider"></div>
+        <Divider orientation="horizontal" variant="solid" color="rgba(255, 255, 255, 0.81)" />
 
         {/* Текст про cookies */}
         <div className="footer__cookies">

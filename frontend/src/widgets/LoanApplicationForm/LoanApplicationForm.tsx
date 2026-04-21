@@ -4,6 +4,7 @@ import { Button } from '../../shared/ui/Button/Button';
 import { Input } from '../../shared/ui/Input/Input';
 import { Select } from '../../shared/ui/Select/Select';
 import { RangeSlider } from '../../shared/ui/RangeSlider/RangeSlider';
+import { Divider } from '../../shared/ui/Divider/Divider';
 import './LoanApplicationForm.css';
 
 interface FormErrors {
@@ -212,7 +213,7 @@ export const LoanApplicationForm: React.FC = () => {
               <div className="loan-form__chosen-section">
                 <span className="loan-form__chosen-label">You have chosen the amount</span>
                 <span className="loan-form__chosen-value">{amount.toLocaleString()} ₽</span>
-                <div className="loan-form__divider-horizontal"></div>
+                <Divider orientation="horizontal" variant="solid" color="rgba(128, 128, 128, 0.3)" />
               </div>
             </div>
           </div>
