@@ -1,0 +1,38 @@
+.tabs {
+  display: flex;
+  gap: 32px;
+  border-bottom: 2px solid rgba(128, 128, 128, 0.2);
+  padding-bottom: 0;
+}
+
+.tabs__item {
+  background: none;
+  border: none;
+  padding: 12px 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: #808080;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Ubuntu', sans-serif;
+  position: relative;
+}
+
+.tabs__item:hover {
+  color: #003CFF;
+}
+
+.tabs__item--active {
+  color: #003CFF;
+}
+
+.tabs__item--active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #003CFF;
+  border-radius: 1px;
+}

@@ -1,0 +1,43 @@
+.cards-section {
+    padding: 60px 0;
+    padding-top: 0px;
+    
+  }
+  
+  .cards-section__grid {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    
+    
+  }
+  
+  .cards-section__row {
+    display: flex;
+    gap: 32px;
+    
+  }
+  
+  .cards-section__row--top {
+    justify-content: space-between;
+    
+  }
+  
+  .cards-section__row--bottom {
+    justify-content: space-between;
+    
+  }
+  
+  @media (max-width: 1200px) {
+    .cards-section__row {
+      flex-wrap: wrap;
+      justify-content: center;
+      
+    }
+    
+    .card--wide {
+      width: 100%;
+      max-width: 630px;
+      
+    }
+  }
