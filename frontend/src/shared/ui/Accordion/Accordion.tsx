@@ -9,20 +9,13 @@ interface AccordionItem {
 
 interface AccordionProps {
   items: AccordionItem[];
-  allowMultiple?: boolean;
 }
 
-export const Accordion: React.FC<AccordionProps> = ({ items, allowMultiple = false }) => {
-  const [openItems, setOpenItems] = useState<string[]>([]);
+export const Accordion: React.FC<AccordionProps> = ({ items }) => {
+  const [openId, setOpenId] = useState<string | null>(null);
 
-  const toggleItem = (id: string) => {
-    if (allowMultiple) {
-      setOpenItems((prev) =>
-        prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
-      );
-    } else {
-      setOpenItems((prev) => (prev.includes(id) ? [] : [id]));
-    }
+  const toggle = (id: string) => {
+    setOpenId(openId === id ? null : id);
   };
 
   return (
@@ -30,13 +23,13 @@ export const Accordion: React.FC<AccordionProps> = ({ items, allowMultiple = fal
       {items.map((item) => (
         <div key={item.id} className="accordion__item">
           <button
-            className={`accordion__header ${openItems.includes(item.id) ? 'accordion__header--open' : ''}`}
-            onClick={() => toggleItem(item.id)}
+            className={`accordion__header ${openId === item.id ? 'accordion__header--open' : ''}`}
+            onClick={() => toggle(item.id)}
           >
             <span className="accordion__title">{item.title}</span>
-            <span className="accordion__icon">{openItems.includes(item.id) ? '−' : '+'}</span>
+            <span className="accordion__icon">{openId === item.id ? '−' : '+'}</span>
           </button>
-          {openItems.includes(item.id) && (
+          {openId === item.id && (
             <div className="accordion__content">{item.content}</div>
           )}
         </div>

@@ -4,7 +4,7 @@ import { Button } from '../../shared/ui/Button/Button';
 import { Input } from '../../shared/ui/Input/Input';
 import { Select } from '../../shared/ui/Select/Select';
 import { RangeSlider } from '../../shared/ui/RangeSlider/RangeSlider';
-import { Divider } from '../../shared/ui/Divider/Divider';
+import { Tooltip } from '../../shared/ui/Tooltip/Tooltip';
 import './LoanApplicationForm.css';
 
 interface FormErrors {
@@ -152,14 +152,12 @@ export const LoanApplicationForm: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Отмечаем все поля как touched
     const allTouched = Object.keys(touched).reduce((acc, key) => {
       acc[key as keyof TouchedFields] = true;
       return acc;
     }, {} as TouchedFields);
     setTouched(allTouched);
     
-    // Валидируем все поля
     const newErrors: FormErrors = {};
     newErrors.lastName = validateField('lastName', formData.lastName);
     newErrors.firstName = validateField('firstName', formData.firstName);
@@ -195,7 +193,9 @@ export const LoanApplicationForm: React.FC = () => {
               </div>
               
               <div className="loan-form__slider-card">
-                <label className="loan-form__slider-label">Select amount</label>
+                <Tooltip content="Available amount from 15 000 ₽ to 600 000 ₽" position="top">
+                  <label className="loan-form__slider-label">Select amount</label>
+                </Tooltip>
                 <div className="loan-form__current-amount">{amount.toLocaleString()}</div>
                 <RangeSlider
                   min={15000}
@@ -213,7 +213,7 @@ export const LoanApplicationForm: React.FC = () => {
               <div className="loan-form__chosen-section">
                 <span className="loan-form__chosen-label">You have chosen the amount</span>
                 <span className="loan-form__chosen-value">{amount.toLocaleString()} ₽</span>
-                <Divider orientation="horizontal" variant="solid" color="rgba(128, 128, 128, 0.3)" />
+                <div className="loan-form__divider-horizontal"></div>
               </div>
             </div>
           </div>
@@ -224,26 +224,32 @@ export const LoanApplicationForm: React.FC = () => {
 
           <form onSubmit={handleSubmit} className="loan-form__form">
             <div className="loan-form__row">
-              <Input
-                label="Your last name"
-                value={formData.lastName}
-                onChange={(v) => handleChange('lastName', v)}
-                onBlur={() => handleBlur('lastName')}
-                placeholder="Doe"
-                required
-                error={errors.lastName && touched.lastName ? errors.lastName : undefined}
-                success={isFieldValid('lastName', formData.lastName)}
-              />
-              <Input
-                label="Your first name"
-                value={formData.firstName}
-                onChange={(v) => handleChange('firstName', v)}
-                onBlur={() => handleBlur('firstName')}
-                placeholder="John"
-                required
-                error={errors.firstName && touched.firstName ? errors.firstName : undefined}
-                success={isFieldValid('firstName', formData.firstName)}
-              />
+              <Tooltip content="Enter your last name as in passport" position="top">
+                <Input
+                  label="Your last name"
+                  value={formData.lastName}
+                  onChange={(v) => handleChange('lastName', v)}
+                  onBlur={() => handleBlur('lastName')}
+                  placeholder="Doe"
+                  required
+                  error={errors.lastName && touched.lastName ? errors.lastName : undefined}
+                  success={isFieldValid('lastName', formData.lastName)}
+                />
+              </Tooltip>
+              
+              <Tooltip content="Enter your first name as in passport" position="top">
+                <Input
+                  label="Your first name"
+                  value={formData.firstName}
+                  onChange={(v) => handleChange('firstName', v)}
+                  onBlur={() => handleBlur('firstName')}
+                  placeholder="John"
+                  required
+                  error={errors.firstName && touched.firstName ? errors.firstName : undefined}
+                  success={isFieldValid('firstName', formData.firstName)}
+                />
+              </Tooltip>
+              
               <Input
                 label="Your patronymic"
                 value={formData.patronymic}
@@ -251,60 +257,74 @@ export const LoanApplicationForm: React.FC = () => {
                 placeholder="Victorovich"
                 required={false}
               />
-              <Select
-                label="Select term"
-                value={formData.term}
-                onChange={(v) => handleChange('term', v)}
-                options={termOptions}
-                placeholder="Select term"
-                required
-                error={errors.term && touched.term ? errors.term : undefined}
-              />
+              
+              <Tooltip content="Choose loan term: 6, 12, 18, or 24 months" position="top">
+                <Select
+                  label="Select term"
+                  value={formData.term}
+                  onChange={(v) => handleChange('term', v)}
+                  options={termOptions}
+                  placeholder="Select term"
+                  required
+                  error={errors.term && touched.term ? errors.term : undefined}
+                />
+              </Tooltip>
             </div>
 
             <div className="loan-form__row">
-              <Input
-                label="Your email"
-                type="email"
-                value={formData.email}
-                onChange={(v) => handleChange('email', v)}
-                onBlur={() => handleBlur('email')}
-                placeholder="test@gmail.com"
-                required
-                error={errors.email && touched.email ? errors.email : undefined}
-                success={isFieldValid('email', formData.email)}
-              />
-              <Input
-                label="Your date of birth"
-                type="text"
-                value={formData.dateOfBirth}
-                onChange={(v) => handleChange('dateOfBirth', v)}
-                onBlur={() => handleBlur('dateOfBirth')}
-                placeholder="DD.MM.YYYY"
-                required
-                error={errors.dateOfBirth && touched.dateOfBirth ? errors.dateOfBirth : undefined}
-                success={isFieldValid('dateOfBirth', formData.dateOfBirth)}
-              />
-              <Input
-                label="Your passport series"
-                value={formData.passportSeries}
-                onChange={(v) => handleChange('passportSeries', v)}
-                onBlur={() => handleBlur('passportSeries')}
-                placeholder="0000"
-                required
-                error={errors.passportSeries && touched.passportSeries ? errors.passportSeries : undefined}
-                success={isFieldValid('passportSeries', formData.passportSeries)}
-              />
-              <Input
-                label="Your passport number"
-                value={formData.passportNumber}
-                onChange={(v) => handleChange('passportNumber', v)}
-                onBlur={() => handleBlur('passportNumber')}
-                placeholder="000000"
-                required
-                error={errors.passportNumber && touched.passportNumber ? errors.passportNumber : undefined}
-                success={isFieldValid('passportNumber', formData.passportNumber)}
-              />
+              <Tooltip content="We will send confirmation to this email" position="top">
+                <Input
+                  label="Your email"
+                  type="email"
+                  value={formData.email}
+                  onChange={(v) => handleChange('email', v)}
+                  onBlur={() => handleBlur('email')}
+                  placeholder="test@gmail.com"
+                  required
+                  error={errors.email && touched.email ? errors.email : undefined}
+                  success={isFieldValid('email', formData.email)}
+                />
+              </Tooltip>
+              
+              <Tooltip content="Format: DD.MM.YYYY. You must be at least 18 years old" position="top">
+                <Input
+                  label="Your date of birth"
+                  type="text"
+                  value={formData.dateOfBirth}
+                  onChange={(v) => handleChange('dateOfBirth', v)}
+                  onBlur={() => handleBlur('dateOfBirth')}
+                  placeholder="DD.MM.YYYY"
+                  required
+                  error={errors.dateOfBirth && touched.dateOfBirth ? errors.dateOfBirth : undefined}
+                  success={isFieldValid('dateOfBirth', formData.dateOfBirth)}
+                />
+              </Tooltip>
+              
+              <Tooltip content="First 4 digits of your passport" position="top">
+                <Input
+                  label="Your passport series"
+                  value={formData.passportSeries}
+                  onChange={(v) => handleChange('passportSeries', v)}
+                  onBlur={() => handleBlur('passportSeries')}
+                  placeholder="0000"
+                  required
+                  error={errors.passportSeries && touched.passportSeries ? errors.passportSeries : undefined}
+                  success={isFieldValid('passportSeries', formData.passportSeries)}
+                />
+              </Tooltip>
+              
+              <Tooltip content="Last 6 digits of your passport" position="top">
+                <Input
+                  label="Your passport number"
+                  value={formData.passportNumber}
+                  onChange={(v) => handleChange('passportNumber', v)}
+                  onBlur={() => handleBlur('passportNumber')}
+                  placeholder="000000"
+                  required
+                  error={errors.passportNumber && touched.passportNumber ? errors.passportNumber : undefined}
+                  success={isFieldValid('passportNumber', formData.passportNumber)}
+                />
+              </Tooltip>
             </div>
 
             <div className="loan-form__actions">
