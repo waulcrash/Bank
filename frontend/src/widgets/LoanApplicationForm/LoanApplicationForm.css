@@ -187,4 +187,11 @@
       grid-template-columns: 1fr;
       gap: 16px;
     }
+
+    .loan-form__error {
+      display: block;
+      margin-top: 4px;
+      font-size: 12px;
+      color: #FF0000;
+    }
   }

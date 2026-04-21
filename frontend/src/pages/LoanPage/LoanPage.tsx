@@ -7,6 +7,7 @@ import { CardsSection } from '../../widgets/CardsSection/CardsSection';
 import { StepsSection } from '../../widgets/StepsSection/StepsSection';
 import { LoanApplicationForm } from '../../widgets/LoanApplicationForm/LoanApplicationForm';
 import { Footer } from '../../widgets/Footer/Footer';
+
 import './LoanPage.css';
 
 export const LoanPage: React.FC = () => {
