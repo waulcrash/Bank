@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { Container } from '../../shared/ui/Container/Container';
 import { Button } from '../../shared/ui/Button/Button';
@@ -21,6 +21,9 @@ interface FormData {
 }
 
 export const LoanApplicationForm: React.FC = () => {
+  const [localAmount, setLocalAmount] = useState<string>('150000');
+  const [isAmountFocused, setIsAmountFocused] = useState(false);
+
   const {
     control,
     handleSubmit,
@@ -50,30 +53,29 @@ export const LoanApplicationForm: React.FC = () => {
     { value: '24', label: '24 months' },
   ];
 
-  // Функция для удаления пробелов
+  // Синхронизация localAmount при изменении amount
+  useEffect(() => {
+    if (!isAmountFocused) {
+      setLocalAmount(amount.toString());
+    }
+  }, [amount, isAmountFocused]);
+
   const removeSpaces = (value: string) => value.replace(/\s/g, '');
 
-  // Валидаторы с запретом пробелов
   const validateLastName = (value: string) => {
     if (!value) return 'Last name is required';
-    if (value.trim() === '') return 'Last name cannot be only spaces';
-    if (value !== value.trim()) return 'Spaces are not allowed';
     return true;
   };
 
   const validateFirstName = (value: string) => {
     if (!value) return 'First name is required';
-    if (value.trim() === '') return 'First name cannot be only spaces';
-    if (value !== value.trim()) return 'Spaces are not allowed';
     return true;
   };
 
   const validateEmail = (value: string) => {
-    const trimmed = value.trim();
-    if (!trimmed) return 'Email is required';
-    if (value !== trimmed) return 'Spaces are not allowed';
+    if (!value) return 'Email is required';
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(trimmed)) return 'Enter a valid email address';
+    if (!emailRegex.test(value)) return 'Enter a valid email address';
     return true;
   };
 
@@ -125,17 +127,45 @@ export const LoanApplicationForm: React.FC = () => {
     setValue('amount', newAmount, { shouldValidate: true });
   };
 
+  const handleAmountFocus = () => {
+    setIsAmountFocused(true);
+    setLocalAmount('');
+  };
+
+  const handleAmountBlur = () => {
+    setIsAmountFocused(false);
+    let value = parseInt(localAmount);
+    if (isNaN(value)) {
+      value = 15000;
+    }
+    const clampedValue = Math.min(600000, Math.max(15000, value));
+    setLocalAmount(clampedValue.toString());
+    handleAmountChange(clampedValue);
+  };
+
+  const handleAmountInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const rawValue = e.target.value;
+    setLocalAmount(rawValue);
+    
+    const parsed = parseInt(rawValue);
+    if (!isNaN(parsed) && parsed >= 15000 && parsed <= 600000) {
+      handleAmountChange(parsed);
+    }
+  };
+
   const onSubmit = (data: FormData) => {
     console.log('Form submitted:', data);
     alert('Application submitted successfully!');
   };
+
+  // Отображаемое значение: при фокусе - localAmount, иначе - форматированное число
+  const displayValue = isAmountFocused ? localAmount : amount.toLocaleString();
 
   return (
     <section className="loan-form">
       <Container>
         <div className="loan-form__card">
           
-          {/* Скрытое поле для amount в react-hook-form */}
           <Controller
             name="amount"
             control={control}
@@ -158,7 +188,17 @@ export const LoanApplicationForm: React.FC = () => {
                 <Tooltip content="Available amount from 15 000 ₽ to 600 000 ₽" position="top">
                   <label className="loan-form__slider-label">Select amount</label>
                 </Tooltip>
-                <div className="loan-form__current-amount">{amount.toLocaleString()}</div>
+                
+                <input
+                  type="text"
+                  value={displayValue}
+                  onChange={handleAmountInputChange}
+                  onFocus={handleAmountFocus}
+                  onBlur={handleAmountBlur}
+                  className="loan-form__current-amount-input"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                />
                 
                 <RangeSlider
                   min={15000}
@@ -193,7 +233,7 @@ export const LoanApplicationForm: React.FC = () => {
                 control={control}
                 rules={{ validate: validateLastName }}
                 render={({ field }) => (
-                  <Tooltip content="Enter your last name as in passport (no spaces allowed)" position="top">
+                  <Tooltip content="Enter your last name as in passport" position="top">
                     <Input
                       label="Your last name"
                       value={field.value}
@@ -216,7 +256,7 @@ export const LoanApplicationForm: React.FC = () => {
                 control={control}
                 rules={{ validate: validateFirstName }}
                 render={({ field }) => (
-                  <Tooltip content="Enter your first name as in passport (no spaces allowed)" position="top">
+                  <Tooltip content="Enter your first name as in passport" position="top">
                     <Input
                       label="Your first name"
                       value={field.value}
@@ -277,7 +317,7 @@ export const LoanApplicationForm: React.FC = () => {
                 control={control}
                 rules={{ validate: validateEmail }}
                 render={({ field }) => (
-                  <Tooltip content="We will send confirmation to this email (no spaces allowed)" position="top">
+                  <Tooltip content="We will send confirmation to this email" position="top">
                     <Input
                       label="Your email"
                       type="email"
@@ -301,7 +341,7 @@ export const LoanApplicationForm: React.FC = () => {
                 control={control}
                 rules={{ validate: validateBirthdate }}
                 render={({ field }) => (
-                  <Tooltip content="Format: DD.MM.YYYY. You must be at least 18 years old (no spaces allowed)" position="top">
+                  <Tooltip content="Format: DD.MM.YYYY. You must be at least 18 years old" position="top">
                     <Input
                       label="Your date of birth"
                       type="text"
@@ -328,7 +368,7 @@ export const LoanApplicationForm: React.FC = () => {
                 control={control}
                 rules={{ validate: validatePassportSeries }}
                 render={({ field }) => (
-                  <Tooltip content="First 4 digits of your passport (no spaces allowed)" position="top">
+                  <Tooltip content="First 4 digits of your passport" position="top">
                     <Input
                       label="Your passport series"
                       value={field.value}
@@ -353,7 +393,7 @@ export const LoanApplicationForm: React.FC = () => {
                 control={control}
                 rules={{ validate: validatePassportNumber }}
                 render={({ field }) => (
-                  <Tooltip content="Last 6 digits of your passport (no spaces allowed)" position="top">
+                  <Tooltip content="Last 6 digits of your passport" position="top">
                     <Input
                       label="Your passport number"
                       value={field.value}

@@ -32,11 +32,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
   };
 
   return (
-    <div
-      className="tooltip"
-      onMouseEnter={showTooltip}
-      onMouseLeave={hideTooltip}
-    >
+    <div className="tooltip" onMouseEnter={showTooltip} onMouseLeave={hideTooltip}>
       {children}
       {isVisible && (
         <div className={`tooltip__content tooltip__content--${position}`}>

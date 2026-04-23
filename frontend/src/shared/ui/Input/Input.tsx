@@ -33,7 +33,7 @@ export const Input: React.FC<InputProps> = ({
       {label && (
         <label className="input__label">
           {label}
-          {required && <span className="input__required">*</span>}
+          {required && error && <span className="input__required">*</span>}
         </label>
       )}
       <div className="input__wrapper">
