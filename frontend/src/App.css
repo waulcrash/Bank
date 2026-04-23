@@ -29,3 +29,7 @@ body {
   margin: 0 auto;
   padding: 0 0px;
 }
+
+html {
+  scroll-behavior: smooth;
+}

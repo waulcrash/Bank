@@ -24,7 +24,6 @@ export const Select: React.FC<SelectProps> = ({
   options,
   placeholder,
   error,
-  required = false,
   disabled = false,
 }) => {
   return (
@@ -32,7 +31,6 @@ export const Select: React.FC<SelectProps> = ({
       {label && (
         <label className="select__label">
           {label}
-          {required && <span className="select__required">*</span>}
         </label>
       )}
       <select
