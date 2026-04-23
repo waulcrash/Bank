@@ -27,7 +27,7 @@ export const Accordion: React.FC<AccordionProps> = ({ items }) => {
             onClick={() => toggle(item.id)}
           >
             <span className="accordion__title">{item.title}</span>
-            <span className="accordion__icon">{openId === item.id ? '−' : '+'}</span>
+            <span className="accordion__icon">{openId === item.id ? '^' : '˅'}</span>
           </button>
           {openId === item.id && (
             <div className="accordion__content">{item.content}</div>
