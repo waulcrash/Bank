@@ -5,6 +5,7 @@ import { Button } from '../../shared/ui/Button/Button';
 import { RangeSlider } from '../../shared/ui/RangeSlider/RangeSlider';
 import { Tooltip } from '../../shared/ui/Tooltip/Tooltip';
 import { defaultFormValues } from '../../shared/constants/formConstants';
+import { useLoanStore } from '../../shared/store/loanStore';
 import { PersonalInfoFields } from './components/PersonalInfoFields';
 import { ContactInfoFields } from './components/ContactInfoFields';
 import './LoanApplicationForm.css';
@@ -24,6 +25,8 @@ interface FormData {
 export const LoanApplicationForm: React.FC = () => {
   const [localAmount, setLocalAmount] = useState<string>('150000');
   const [isAmountFocused, setIsAmountFocused] = useState(false);
+  
+  const { submitApplication, isSubmitting } = useLoanStore();
 
   const methods = useForm<FormData>({
     mode: 'onChange',
@@ -38,6 +41,28 @@ export const LoanApplicationForm: React.FC = () => {
       setLocalAmount(amount.toString());
     }
   }, [amount, isAmountFocused]);
+
+  const formatDateForApi = (dateStr: string): string => {
+    const parts = dateStr.split('.');
+    if (parts.length === 3) {
+      return `${parts[2]}-${parts[1]}-${parts[0]}`;
+    }
+    return dateStr;
+  };
+
+  const onSubmit = async (data: FormData) => {
+    await submitApplication({
+      amount: data.amount,
+      term: parseInt(data.term),
+      firstName: data.firstName,
+      lastName: data.lastName,
+      middleName: data.patronymic || undefined,
+      email: data.email,
+      birthdate: formatDateForApi(data.dateOfBirth),
+      passportSeries: data.passportSeries,
+      passportNumber: data.passportNumber,
+    });
+  };
 
   const handleAmountChange = (newAmount: number) => {
     setValue('amount', newAmount, { shouldValidate: true });
@@ -66,12 +91,6 @@ export const LoanApplicationForm: React.FC = () => {
     }
   };
 
-  const onSubmit = (data: FormData) => {
-    console.log('Form submitted:', data);
-    alert('Application submitted successfully!');
-  };
-
-  // Отображаемое значение: при фокусе - localAmount, иначе - форматированное число
   const displayValue = isAmountFocused ? localAmount : amount.toLocaleString();
 
   return (
@@ -144,8 +163,8 @@ export const LoanApplicationForm: React.FC = () => {
               <PersonalInfoFields />
               <ContactInfoFields />
               <div className="loan-form__actions">
-                <Button type="submit" variant="primary" size="large" disabled={!isValid}>
-                  Continue
+                <Button type="submit" variant="primary" size="large" disabled={!isValid || isSubmitting}>
+                  {isSubmitting ? 'Submitting...' : 'Continue'}
                 </Button>
               </div>
             </form>

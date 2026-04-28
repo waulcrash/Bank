@@ -1,0 +1,46 @@
+.test-api-page {
+    padding: 40px 0;
+    min-height: 100vh;
+  }
+  
+  .test-api-page__title {
+    font-size: 32px;
+    font-weight: 700;
+    color: #1A202C;
+    margin-bottom: 32px;
+    text-align: center;
+  }
+  
+  .test-api-page__controls {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+  
+  .test-api-page__subtitle {
+    font-size: 24px;
+    font-weight: 600;
+    color: #1A202C;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+  
+  .test-api-page__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    justify-content: center;
+  }
+  
+  @media (max-width: 1200px) {
+    .test-api-page__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .test-api-page__grid {
+      grid-template-columns: 1fr;
+    }
+  }

@@ -1,0 +1,84 @@
+.credit-offer-card {
+    width: 295px;
+    min-height: auto;
+    background: #FFFFFF;
+    border: 2px solid #E2E8F0;
+    border-radius: 28px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .credit-offer-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .credit-offer-card__image-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 8px;
+  }
+  
+  .credit-offer-card__image {
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
+  }
+  
+  .credit-offer-card__content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+  }
+  
+  .credit-offer-card__field {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 400;
+    color: #1A202C;
+    text-align: center;
+    width: 100%;
+  }
+  
+  .credit-offer-card__field--with-icon {
+    gap: 12px;
+  }
+  
+  .credit-offer-card__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  
+  .credit-offer-card__icon--success {
+    background: #28a745;
+    color: #FFFFFF;
+  }
+  
+  .credit-offer-card__icon--error {
+    background: #dc3545;
+    color: #FFFFFF;
+  }
+
+  .credit-offer-card .btn {
+    width: 148px;
+    margin: 0 auto;
+  }
+  
+  @media (max-width: 1300px) {
+    .credit-offer-card {
+      width: 100%;
+      min-width: 250px;
+    }
+  }
