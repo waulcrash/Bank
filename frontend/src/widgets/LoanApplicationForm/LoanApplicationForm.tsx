@@ -51,16 +51,18 @@ export const LoanApplicationForm: React.FC = () => {
   };
 
   const onSubmit = async (data: FormData) => {
+    const { amount, term, firstName, lastName, patronymic, email, dateOfBirth, passportSeries, passportNumber } = data;
+    
     await submitApplication({
-      amount: data.amount,
-      term: parseInt(data.term),
-      firstName: data.firstName,
-      lastName: data.lastName,
-      middleName: data.patronymic || undefined,
-      email: data.email,
-      birthdate: formatDateForApi(data.dateOfBirth),
-      passportSeries: data.passportSeries,
-      passportNumber: data.passportNumber,
+      amount,
+      term: parseInt(term),
+      firstName,
+      lastName,
+      middleName: patronymic || undefined,
+      email,
+      birthdate: formatDateForApi(dateOfBirth),
+      passportSeries,
+      passportNumber,
     });
   };
 
