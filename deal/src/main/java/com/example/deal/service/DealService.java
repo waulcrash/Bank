@@ -31,6 +31,8 @@ public class DealService {
     private final CreditRepository creditRepository;
     private final CalculatorClient calculatorClient;
     private final ObjectMapper objectMapper;
+
+    private final KafkaProducer kafkaProducer;
     
 /**
      * Создание кредитной заявки и получение списка предложений
@@ -195,5 +197,29 @@ public class DealService {
         
         statementRepository.save(statement);
         log.info("Statement updated with credit and CC_APPROVED status");
+
+        
+    }
+
+    public void sendToKafka(LoanOfferDto loanOfferDto) {
+        // Найти заявку по statementId
+        Statement statement = statementRepository.findById(loanOfferDto.getStatementId())
+                .orElseThrow(() -> new RuntimeException("Statement not found"));
+        
+        // Получить email из данных клиента
+        String email = statement.getClient().getEmail();
+        
+        // Создать сообщение
+        EmailMessage emailMessage = EmailMessage.builder()
+                .address(email)
+                .theme("send-documents")
+                .statementId(statement.getId())
+                .text("Документы для вашей кредитной карты успешно сформированы")
+                .build();
+        
+        log.info("Sending message to Kafka for statement: {}", statement.getId());
+        
+        // Отправить в Kafka
+        kafkaProducer.sendMessage("send-documents", emailMessage);
     }
 }
