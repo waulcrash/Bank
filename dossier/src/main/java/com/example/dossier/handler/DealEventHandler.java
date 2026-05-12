@@ -1,40 +1,32 @@
 package com.example.dossier.handler;
 
-import java.util.Optional;
-
+import com.example.deal.dto.EmailMessage;
+import com.example.dossier.service.MailSenderService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import neo.study.dossier.dto.EmailMessage;
-import neo.study.dossier.service.MailSenderService;
-
-@Slf4j
 @Component
-@RequiredArgsConstructor
 public class DealEventHandler {
-    
+
+    private static final Logger log = LoggerFactory.getLogger(DealEventHandler.class);
     private final MailSenderService mailSenderService;
-    
-    @KafkaListener(topics = { "finish-registration", "send-documents", "send-ses", "credit-issued" })
+
+    public DealEventHandler(MailSenderService mailSenderService) {
+        this.mailSenderService = mailSenderService;
+    }
+
+    @KafkaListener(topics = "send-documents")
     public void handleEmailMessage(EmailMessage emailMessage) {
-        log.info("Received email message from Kafka: address={}, theme={}, statementId={}, text={}",
-                emailMessage.getAddress(), 
-                emailMessage.getTheme(), 
-                emailMessage.getStatementId(), 
-                emailMessage.getText());
-        
+        log.info("Received email message: address={}, theme={}, statementId={}, text={}",
+                emailMessage.getAddress(), emailMessage.getTheme(),
+                emailMessage.getStatementId(), emailMessage.getText());
+
         mailSenderService.sendEmail(
-                emailMessage.getAddress(), 
-                getTheme(emailMessage),
+                emailMessage.getAddress(),
+                emailMessage.getTheme(),
                 emailMessage.getText()
         );
-    }
-    
-    private String getTheme(EmailMessage emailMessage) {
-        return Optional.ofNullable(emailMessage.getTheme())
-                .map(String::valueOf)
-                .orElse("Default Subject");
     }
 }

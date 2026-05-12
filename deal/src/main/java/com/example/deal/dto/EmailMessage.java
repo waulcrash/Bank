@@ -6,34 +6,13 @@ public class EmailMessage {
     private Long statementId;
     private String text;
 
-    public EmailMessage() {}
-
-    public EmailMessage(String address, String theme, Long statementId, String text) {
-        this.address = address;
-        this.theme = theme;
-        this.statementId = statementId;
-        this.text = text;
-    }
-
+   
     public String getAddress() { return address; }
     public void setAddress(String address) { this.address = address; }
-
     public String getTheme() { return theme; }
     public void setTheme(String theme) { this.theme = theme; }
-
     public Long getStatementId() { return statementId; }
     public void setStatementId(Long statementId) { this.statementId = statementId; }
-
     public String getText() { return text; }
     public void setText(String text) { this.text = text; }
-
-    @Override
-    public String toString() {
-        return "EmailMessage{" +
-                "address='" + address + '\'' +
-                ", theme='" + theme + '\'' +
-                ", statementId=" + statementId +
-                ", text='" + text + '\'' +
-                '}';
-    }
 }

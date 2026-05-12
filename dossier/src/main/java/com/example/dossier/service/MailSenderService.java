@@ -1,49 +1,64 @@
 package com.example.dossier.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.Context;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 
-@Slf4j
 @Service
-@RequiredArgsConstructor
 public class MailSenderService {
+
+    private static final Logger log = LoggerFactory.getLogger(MailSenderService.class);
     
     @Value("${spring.mail.username}")
     private String from;
     
     private final JavaMailSender mailSender;
-    private final TemplateEngine templateEngine;
+    
+    public MailSenderService(JavaMailSender mailSender) {
+        this.mailSender = mailSender;
+    }
     
     public void sendEmail(String to, String subject, String text) {
         log.info("Sending email to: {}, subject: {}", to, subject);
         
-        var thymeleafContext = new Context();
-        thymeleafContext.setVariable("text", text);
-        thymeleafContext.setVariable("subject", subject);
-        
-        var htmlContent = templateEngine.process("email-template", thymeleafContext);
-        
         try {
-            var message = mailSender.createMimeMessage();
-            var helper = new MimeMessageHelper(message, true, "UTF-8");
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
             
             helper.setTo(to);
             helper.setSubject(subject);
-            helper.setText(htmlContent, true);
+            helper.setText(buildHtmlTemplate(text), true);
             helper.setFrom(from);
             
             mailSender.send(message);
             log.info("Email sent successfully to: {}", to);
-        } catch (Exception e) {
-            log.error("Error sending email to: {}", to, e);
+        } catch (MessagingException e) {
+            log.error("Failed to send email to: {}", to, e);
             throw new RuntimeException("Error sending email", e);
         }
+    }
+    
+    private String buildHtmlTemplate(String text) {
+        return """
+            <!DOCTYPE html>
+            <html>
+            <head><meta charset="UTF-8"></head>
+            <body style="font-family: Arial, sans-serif;">
+                <div style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
+                    <h2 style="color: #5B35D5;">Ваш кредитный договор</h2>
+                    <p>Уважаемый клиент!</p>
+                    <p>%s</p>
+                    <hr>
+                    <p style="font-size: 12px; color: #999;">Это автоматическое сообщение, пожалуйста, не отвечайте на него.</p>
+                </div>
+            </body>
+            </html>
+            """.formatted(text);
     }
 }
