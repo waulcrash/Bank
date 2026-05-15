@@ -8,10 +8,9 @@ export default defineConfig({
     react(),
     babel({ presets: [reactCompilerPreset()] })
   ], 
-  test: {
-    globals: true,  // ← это даёт describe, test, expect без импорта
-    environment: 'happy-dom',
-    setupFiles: './src/test/setup.ts',
+  server: {
+    port: 3000,
+    open: true,
   },
   
   
