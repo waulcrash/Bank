@@ -7,7 +7,12 @@ export default defineConfig({
   plugins: [
     react(),
     babel({ presets: [reactCompilerPreset()] })
-  ],
+  ], 
+  test: {
+    globals: true,  // ← это даёт describe, test, expect без импорта
+    environment: 'happy-dom',
+    setupFiles: './src/test/setup.ts',
+  },
   
   
 })
