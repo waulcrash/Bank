@@ -163,7 +163,7 @@ public class CreditProperties {
 }
 
 ```
-### /calculator/calc
+### /deal/offer/select
 ```json
 {
   "statementId": "550e8400-e29b-41d4-a716-446655440000",

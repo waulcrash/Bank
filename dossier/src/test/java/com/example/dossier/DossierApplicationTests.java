@@ -8,6 +8,5 @@ class DossierApplicationTests {
 
     @Test
     void contextLoads() {
-        // Проверка, что контекст поднимается
     }
 }
