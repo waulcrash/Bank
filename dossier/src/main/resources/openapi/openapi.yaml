@@ -1,0 +1,39 @@
+openapi: 3.1.0
+info:
+  title: Dossier API
+  description: API для асинхронной отправки документов
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8082
+    description: Локальный сервер
+
+components:
+  schemas:
+    EmailMessage:
+      type: object
+      description: Сообщение для отправки на почту
+      required:
+        - address
+        - theme
+        - statementId
+        - text
+      properties:
+        address:
+          type: string
+          format: email
+          description: Адрес электронной почты клиента
+          example: "client@example.com"
+        theme:
+          type: string
+          description: Тема сообщения (DOCUMENTS_CREATED и т.д.)
+          example: "DOCUMENTS_CREATED"
+        statementId:
+          type: integer
+          format: int64
+          description: ID заявки
+          example: 12345
+        text:
+          type: string
+          description: Текст письма с кредитным договором
+          example: "Документы для вашей кредитной карты успешно сформированы"

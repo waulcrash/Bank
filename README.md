@@ -1,6 +1,4 @@
-# Кредитный Калькулятор (Calculator Service)
-
-Сервис для расчета кредитных предложений, полной стоимости кредита (ПСК) и графика платежей. Поддерживает прескоринг, скоринг и генерацию предложений с учетом страхования и зарплатного статуса клиента.
+# Bank
 
 ## 📋 Оглавление
 - [Основные возможности](#основные-возможности)
@@ -15,7 +13,7 @@
 - [Примеры использования](#примеры-использования)
 - [Структура проекта](#структура-проекта)
 
-## 🚀 Основные возможности
+## 🚀 Основные возможности Calculator
 
 - **Прескоринг** — первичная проверка данных заявки (сумма, срок, возраст, паспортные данные)
 - **Скоринг** — расширенная проверка клиента (возраст 21-65 лет, паспортные данные)
@@ -145,34 +143,35 @@ public class CreditProperties {
 ## 📗 SwaggerUI
 
 - MVP Level 1: http://localhost:8080/swagger-ui/index.html 
+- MVP Level 2: http://localhost:8081/swagger-ui/index.html 
+- MVP Level 6: http://localhost:8082/swagger-ui/index.html 
 
 ## 📝 Примеры использования
 
-### /calculator/offers
+### /deal/statement
 ```json
 {
   "amount": 1000000,
   "term": 12,
-  "firstName": "Павел",
-  "lastName": "Павлов",
-  "middleName": "Павлович",
-  "email": "pavel@example.com",
-  "birthdate": "1994-02-13T00:00:00.000Z",
-  "passportSeries": "1234",
-  "passportNumber": "123456"
-}
-```
-### /calculator/calc
-```json
-{
-  "amount": 500000,
-  "term": 24,
   "firstName": "Иван",
   "lastName": "Петров",
-  "middleName": "Сергеевич",
-  "birthdate": "2005-02-08T00:00:00.000Z",
+  "middleName": "Иванович",
+  "email": "ivan.petrov@example.com",
+  "birthdate": "1990-01-01",
   "passportSeries": "1234",
-  "passportNumber": "123456",
+  "passportNumber": "567890"
+}
+
+```
+### /deal/offer/select
+```json
+{
+  "statementId": "550e8400-e29b-41d4-a716-446655440000",
+  "requestedAmount": 1000000,
+  "totalAmount": 1066200,
+  "term": 12,
+  "monthlyPayment": 88850,
+  "rate": 12,
   "isInsuranceEnabled": true,
   "isSalaryClient": true
 }

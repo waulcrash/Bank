@@ -11,8 +11,12 @@ import com.example.deal.repository.StatementRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import com.example.deal.kafka.KafkaProducer;
+
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.example.deal.kafka.*;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -31,6 +35,9 @@ public class DealService {
     private final CreditRepository creditRepository;
     private final CalculatorClient calculatorClient;
     private final ObjectMapper objectMapper;
+    
+
+    private final KafkaTemplate<String, Object> kafkaTemplate;
     
 /**
      * Создание кредитной заявки и получение списка предложений
@@ -194,6 +201,28 @@ public class DealService {
             .build());
         
         statementRepository.save(statement);
+
+        
         log.info("Statement updated with credit and CC_APPROVED status");
+
+        log.info("Preparing to send message to Kafka for statementId: {}", statement.getId());
+
+        EmailMessage emailMessage = new EmailMessage();
+        emailMessage.setAddress(statement.getClient().getEmail());
+        emailMessage.setTheme("Документы по кредиту");
+        emailMessage.setStatementId(statement.getId().getMostSignificantBits());
+        emailMessage.setText("Документы для вашей кредитной карты успешно сформированы");
+
+        kafkaTemplate.send("send-documents", emailMessage);
+        log.info("Message sent to Kafka");
+
+            // Обновление статуса на DOCUMENTS_CREATED
+        statement.setStatus(ApplicationStatus.DOCUMENTS_CREATED);
+        statementRepository.save(statement);
+        log.info("Statement status updated to DOCUMENTS_CREATED for statement: {}", statement.getId());
     }
+
+
+
+    
 }

@@ -29,6 +29,7 @@ public class DealController implements DealControllerApi {
     public ResponseEntity<Object> selectOffer(LoanOfferDto loanOfferDto) {
         log.info("POST /deal/offer/select - Request for statement: {}", loanOfferDto.getStatementId());
         dealService.selectOffer(loanOfferDto);
+        
         log.info("POST /deal/offer/select - Success");
         return ResponseEntity.ok().build();
     }
