@@ -18,9 +18,18 @@
 		<java.version>21</java.version>
 		<maven.compiler.source>21</maven.compiler.source>
 		<maven.compiler.target>21</maven.compiler.target>
+
 		<openapi-generator.version>7.19.0</openapi-generator.version>
+		<jacoco.version>0.8.10</jacoco.version>
+		<maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
+
+		<springdoc-openapi.version>2.2.0</springdoc-openapi.version>
 		<springdoc-openapi-starter-webmvc-ui.version>3.0.1</springdoc-openapi-starter-webmvc-ui.version>
+		<lombok.version>1.18.36</lombok.version>
+		<liquibase-core.version>4.27.0</liquibase-core.version>
+		<spring-boot-starter-liquibase.version>4.0.0</spring-boot-starter-liquibase.version>
 		<jackson-databind-nullable.version>0.2.8</jackson-databind-nullable.version>
+		<swagger-annotations.version>2.2.8</swagger-annotations.version>
 		<mapstruct.version>1.6.3</mapstruct.version>
 	</properties>
 
@@ -66,14 +75,14 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-liquibase</artifactId>
-			<version>4.0.0</version>
+			<version>${spring-boot-starter-liquibase.version}</version>
 			<scope>compile</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.liquibase</groupId>
 			<artifactId>liquibase-core</artifactId>
-			<version>4.27.0</version>
+			<version>${liquibase-core.version}</version>
 		</dependency>
 
 		<!-- JSON -->
@@ -96,13 +105,13 @@
 		<dependency>
 			<groupId>org.openapitools</groupId>
 			<artifactId>jackson-databind-nullable</artifactId>
-			<version>0.2.6</version>
+			<version>${jackson-databind-nullable.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>io.swagger.core.v3</groupId>
 			<artifactId>swagger-annotations</artifactId>
-			<version>2.2.8</version>
+			<version>${swagger-annotations.version}</version>
 		</dependency>
 
 		<!-- HTTP Client -->
@@ -115,14 +124,14 @@
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-			<version>2.2.0</version>
+			<version>${springdoc-openapi.version}</version>
 		</dependency>
 
 		<!-- Lombok -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.18.36</version>
+			<version>${lombok.version}</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -162,7 +171,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.11.0</version>
+				<version>${maven-compiler-plugin.version}</version>
 				<configuration>
 					<source>21</source>
 					<target>21</target>
@@ -170,7 +179,7 @@
 						<path>
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok</artifactId>
-							<version>1.18.36</version>
+							<version>${lombok.version}</version>
 						</path>
 					</annotationProcessorPaths>
 				</configuration>
@@ -232,7 +241,7 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.10</version>
+				<version>${jacoco.version}</version>
 				<executions>
 					<execution>
 						<goals>
