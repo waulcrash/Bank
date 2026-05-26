@@ -50,7 +50,6 @@ services:
         container_name: calculator
         environment:
             PORT: ${CALCULATOR_PORT:-8080}
-            DEAL_ADDRESS: ${DEAL_ADDRESS:-http://deal:8081}
         ports:
             - "${CALCULATOR_PORT:-8080}:${CALCULATOR_PORT:-8080}"
         env_file:
