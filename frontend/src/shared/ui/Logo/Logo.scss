@@ -1,0 +1,34 @@
+.logo {
+    font-weight: 700;
+    
+    &__text {
+      background: linear-gradient(135deg, #5B35D5 0%, #7B5BE8 100%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+    
+    &--light &__text {
+      color: #B4387A;
+      background: none;
+      -webkit-background-clip: unset;
+    }
+    
+    &--dark &__text {
+      color: #B4387A;
+      background: none;
+      -webkit-background-clip: unset;
+    }
+    
+    &--small {
+      font-size: 20px;
+    }
+    
+    &--medium {
+      font-size: 28px;
+    }
+    
+    &--large {
+      font-size: 36px;
+    }
+  }

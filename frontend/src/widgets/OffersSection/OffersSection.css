@@ -1,0 +1,46 @@
+.offers-section {
+    padding: 60px 0;
+  }
+  
+  
+  
+  .offers-section__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    justify-content: center;
+  }
+  
+  .offers-section__loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+  }
+  
+  .loader {
+    width: 50px;
+    height: 50px;
+    border: 3px solid #E2E8F0;
+    border-top-color: #5B35D5;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  @media (max-width: 1200px) {
+    .offers-section__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .offers-section__grid {
+      grid-template-columns: 1fr;
+    }
+  }

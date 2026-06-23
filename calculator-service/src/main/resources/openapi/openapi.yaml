@@ -1,0 +1,344 @@
+openapi: 3.1.0
+info:
+  title: Calculator API
+  description: API для кредитного калькулятора
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080
+    description: Локальный сервер
+
+tags:
+  - name: calculator-controller
+    description: Операции кредитного калькулятора
+
+paths:
+  /calculator/offers:
+    post:
+      tags:
+        - calculator-controller
+      summary: Получить кредитные предложения
+      description: На основе запроса генерирует 4 кредитных предложения 
+      operationId: offers
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoanStatementRequestDto'
+      responses:
+        '200':
+          description: Успешный ответ - список кредитных предложений
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LoanOfferDto'
+        '400':
+          description: Ошибка валидации запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /calculator/calc:
+    post:
+      tags:
+        - calculator-controller
+      summary: Выполнить полный расчет кредита
+      description: Выполняет скоринг и полный расчет кредита с графиком платежей
+      operationId: calc
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScoringDataDto'
+      responses:
+        '200':
+          description: Успешный расчет кредита
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreditDto'
+        '400':
+          description: Ошибка валидации данных
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    LoanStatementRequestDto:
+      type: object
+      description: Запрос на предварительный расчет кредита
+      required:
+        - amount
+        - term
+        - firstName
+        - lastName
+        - email
+        - birthdate
+        - passportSeries
+        - passportNumber
+      properties:
+        amount:
+          type: number
+          format: bigdecimal
+          description: Запрашиваемая сумма кредита
+          example: 1000000
+        term:
+          type: integer
+          format: int32
+          description: Срок кредита в месяцах
+          example: 12
+        firstName:
+          type: string
+          description: Имя
+          example: Павел
+        lastName:
+          type: string
+          description: Фамилия
+          example: Хвостунов
+        middleName:
+          type: string
+          description: Отчество
+          example: Сергеевич
+        email:
+          type: string
+          format: email
+          description: Email
+          example: pavel@example.com
+        birthdate:
+          type: string
+          format: date
+          description: Дата рождения
+          example: 2005-02-08
+        passportSeries:
+          type: string
+          description: Серия паспорта
+          example: "1234"
+        passportNumber:
+          type: string
+          description: Номер паспорта
+          example: "123456"
+
+    LoanOfferDto:
+      type: object
+      description: Кредитное предложение
+      properties:
+        statementId:
+          type: string
+          format: uuid
+          description: UUID заявки
+          example: 123e4567-e89b-12d3-a456-426614174000
+        requestedAmount:
+          type: number
+          format: bigdecimal
+          description: Запрашиваемая сумма
+          example: 1000000
+        totalAmount:
+          type: number
+          format: bigdecimal
+          description: Итоговая сумма 
+          example: 1100000
+        term:
+          type: integer
+          format: int32
+          description: Срок кредита в месяцах
+          example: 12
+        monthlyPayment:
+          type: number
+          format: bigdecimal
+          description: Ежемесячный платеж
+          example: 95833.33
+        rate:
+          type: number
+          format: bigdecimal
+          description: Процентная ставка
+          example: 15.0
+        isInsuranceEnabled:
+          type: boolean
+          description: Наличие страховки
+          example: true
+        isSalaryClient:
+          type: boolean
+          description: Зарплатный клиент
+          example: true
+
+    ScoringDataDto:
+      type: object
+      description: Данные для скоринга и полного расчета кредита
+      required:
+        - amount
+        - term
+        - firstName
+        - lastName
+        - birthdate
+        - passportSeries
+        - passportNumber
+        - isInsuranceEnabled
+        - isSalaryClient
+      properties:
+        amount:
+          type: number
+          format: bigdecimal
+          description: Запрашиваемая сумма кредита
+          example: 1000000
+        term:
+          type: integer
+          format: int32
+          description: Срок кредита в месяцах
+          example: 12
+        firstName:
+          type: string
+          description: Имя
+          example: Павел
+        lastName:
+          type: string
+          description: Фамилия
+          example: Хвостунов
+        middleName:
+          type: string
+          description: Отчество
+          example: Сергеевич
+        birthdate:
+          type: string
+          format: date
+          description: Дата рождения
+          example: 2005-02-08
+        passportSeries:
+          type: string
+          description: Серия паспорта
+          example: "1234"
+        passportNumber:
+          type: string
+          description: Номер паспорта
+          example: "123456"
+        isInsuranceEnabled:
+          type: boolean
+          description: Наличие страховки
+          example: true
+        isSalaryClient:
+          type: boolean
+          description: Зарплатный клиент
+          example: true
+
+    PaymentScheduleElementDto:
+      type: object
+      description: Элемент графика платежей
+      properties:
+        number:
+          type: integer
+          format: int32
+          description: Номер платежа
+          example: 1
+        date:
+          type: string
+          format: date
+          description: Дата платежа
+          example: 2026-02-12
+        totalPayment:
+          type: number
+          format: bigdecimal
+          description: Общая сумма платежа
+          example: 90258.00
+        interestPayment:
+          type: number
+          format: bigdecimal
+          description: Сумма процентов
+          example: 12500.00
+        debtPayment:
+          type: number
+          format: bigdecimal
+          description: Сумма погашения долга
+          example: 77758.00
+        remainingDebt:
+          type: number
+          format: bigdecimal
+          description: Остаток долга
+          example: 922242.00
+
+    CreditDto:
+      type: object
+      description: Полная информация о кредите
+      properties:
+        amount:
+          type: number
+          format: bigdecimal
+          description: Сумма кредита
+          example: 1000000
+        term:
+          type: integer
+          format: int32
+          description: Срок кредита в месяцах
+          example: 12
+        monthlyPayment:
+          type: number
+          format: bigdecimal
+          description: Ежемесячный платеж
+          example: 90258.00
+        rate:
+          type: number
+          format: bigdecimal
+          description: Процентная ставка
+          example: 15.0
+        psk:
+          type: number
+          format: bigdecimal
+          description: Полная стоимость кредита (%)
+          example: 16.2
+        isInsuranceEnabled:
+          type: boolean
+          description: Наличие страховки
+          example: true
+        isSalaryClient:
+          type: boolean
+          description: Зарплатный клиент
+          example: true
+        paymentSchedule:
+          type: array
+          description: График платежей
+          items:
+            $ref: '#/components/schemas/PaymentScheduleElementDto'
+
+    ErrorResponse:
+      type: object
+      description: Ответ с ошибкой
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          description: Время ошибки
+          example: 2024-01-01T12:00:00
+        status:
+          type: integer
+          format: int32
+          description: HTTP статус
+          example: 400
+        error:
+          type: string
+          description: Тип ошибки
+          example: Bad Request
+        message:
+          type: string
+          description: Сообщение об ошибке
+          example: Ошибка валидации
+        path:
+          type: string
+          description: Путь запроса
+          example: /calculator/offers

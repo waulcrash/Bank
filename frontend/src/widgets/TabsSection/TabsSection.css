@@ -1,0 +1,121 @@
+.tabs-section {
+  padding: 40px 0;
+}
+
+.tabs-section__content {
+  margin-top: 32px;
+}
+
+.tabs-section__panel {
+  animation: fadeIn 0.3s ease;
+}
+
+/* Rates and conditions styles */
+.rates-list {
+  max-width: 1100px;
+}
+
+.rates-list__item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+}
+
+.rates-list__label {
+  font-size: 16px;
+  font-weight: 500;
+  color: #1A202C;
+  min-width: 200px;
+  flex-shrink: 0;
+  text-align: left;
+}
+
+.rates-list__value {
+  font-size: 16px;
+  font-weight: 500;
+  color: #2D3748;
+  flex: 1;
+  text-align: left;
+  line-height: 1.5;
+  max-width: 600px;
+}
+
+/* Cashback styles */
+.cashback-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.cashback-card {
+  padding: 32px 24px;
+  border-radius: 20px;
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.cashback-card:hover {
+  transform: translateY(-4px);
+}
+
+.cashback-card__title {
+  font-size: 18px;
+  font-weight: 500;
+  color: #1A202C;
+  margin-bottom: 12px;
+  text-align: left;
+}
+
+.cashback-card__value {
+  font-size: 32px;
+  font-weight: 700;
+  color:rgba(0, 0, 0, 1);
+  text-align: left;
+}
+
+/* FAQ styles */
+.faq-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1A202C;
+  margin-bottom: 24px;
+}
+
+.faq-block {
+  margin-bottom: 48px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .cashback-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  
+  .rates-list__item {
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
+  }
+  
+  .faq-title {
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .cashback-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,30 @@
+.steps-section {
+    padding: 60px 0;
+  }
+  
+  .steps-section__title {
+    font-size: 30px;
+    font-weight: 700;
+    text-align: center;
+    color: #1A202C;
+    margin: 0 0 48px 0;
+    letter-spacing: 0.02em;
+  }
+  
+  .steps-section__grid {
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+  
+  @media (max-width: 768px) {
+    .steps-section__grid {
+      flex-direction: column;
+      gap: 3px;
+    }
+    
+    .step__line::before {
+      display: none;
+    }
+  }
