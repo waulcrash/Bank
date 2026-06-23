@@ -6,6 +6,6 @@ RUN ./mvnw clean package -DskipTests
 
 FROM eclipse-temurin:21-jre
 WORKDIR /app
-COPY --from=builder /app/target/dossier*.jar dossier.jar
-EXPOSE 8082
-ENTRYPOINT ["java", "-jar", "dossier.jar"]
+COPY --from=builder /app/target/calculator*.jar calculator.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "calculator.jar"]
